@@ -8,7 +8,7 @@
 
     <link rel='icon' type='image/png' href='assets/images/favicon.png'>
     <link rel='stylesheet' href='assets/css/styles.css'>
-    <!-- <script src='assets/js/scripts.js'></script> -->
+    <script src='assets/js/scripts.js'></script>
 </head>
 <body>
 
@@ -37,47 +37,72 @@
 
         <div class='controls'>
             <div class='control-types'>
-                <span class='active'>EMOM</span>
-                <span>AMRAP</span>
+                <button class='active' onclick="switchType(this, 'emom')">EMOM</button>
+                <button onclick="switchType(this, 'amrap')">AMRAP</button>
             </div>
 
-            <div class='control-panel'>
-                <div class='control-item'>
-                    <div class='label'>
-                        <span>E</span>
-                        <span>1</span>
-                        <span>MOM</span>
+            <div class='control-panel-container'>
+                <div id='emomControlPanel' class='control-panel'>
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>E</span>
+                            <span id='emomMinutes'></span>
+                            <span>MOM</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('emomMinutes', -1);">&#9666&#9666&#9666</button>
+                            <button onclick="adjustSetting('emomMinutes', -0.5);">&#9666&#9666</button>
+                            <button onclick="adjustSetting('emomMinutes', -0.25);">&#9666</button>
+                            <button onclick="adjustSetting('emomMinutes', 0.25);">&#9656</button>
+                            <button onclick="adjustSetting('emomMinutes', 0.5);">&#9656&#9656</button>
+                            <button onclick="adjustSetting('emomMinutes', 1);">&#9656&#9656&#9656</button>
+                        </div>
                     </div>
 
-                    <div class='increment-buttons'>
-                        <button>&#9666&#9666&#9666</button>
-                        <button>&#9666&#9666</button>
-                        <button>&#9666</button>
-                        <button>&#9656</button>
-                        <button>&#9656&#9656</button>
-                        <button>&#9656&#9656&#9656</button>
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>x</span>
+                            <span id='emomRounds'></span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('emomRounds', -10);">&#9666&#9666&#9666</button>
+                            <button onclick="adjustSetting('emomRounds', -5);">&#9666&#9666</button>
+                            <button onclick="adjustSetting('emomRounds', -1);">&#9666</button>
+                            <button onclick="adjustSetting('emomRounds', 1);">&#9656</button>
+                            <button onclick="adjustSetting('emomRounds', 5);">&#9656&#9656</button>
+                            <button onclick="adjustSetting('emomRounds', 10);">&#9656&#9656&#9656</button>
+                        </div>
+                    </div>
+
+                    <div class='control-buttons'>
+                        <button>Start</button>
+                        <button>Reset</button>
                     </div>
                 </div>
 
-                <div class='control-item'>
-                    <div class='label'>
-                        <span>x</span>
-                        <span>10</span>
+                <div id='amrapControlPanel' class='control-panel hidden'>
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span id='amrapMinutes'></span>
+                            <span>Mins</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('amrapMinutes', -10);">&#9666&#9666&#9666</button>
+                            <button onclick="adjustSetting('amrapMinutes', -5);">&#9666&#9666</button>
+                            <button onclick="adjustSetting('amrapMinutes', -1);">&#9666</button>
+                            <button onclick="adjustSetting('amrapMinutes', 1);">&#9656</button>
+                            <button onclick="adjustSetting('amrapMinutes', 5);">&#9656&#9656</button>
+                            <button onclick="adjustSetting('amrapMinutes', 10);">&#9656&#9656&#9656</button>
+                        </div>
                     </div>
 
-                    <div class='increment-buttons'>
-                        <button>&#9666&#9666&#9666</button>
-                        <button>&#9666&#9666</button>
-                        <button>&#9666</button>
-                        <button>&#9656</button>
-                        <button>&#9656&#9656</button>
-                        <button>&#9656&#9656&#9656</button>
+                    <div class='control-buttons'>
+                        <button>Start</button>
+                        <button>Reset</button>
                     </div>
-                </div>
-
-                <div class='control-buttons'>
-                    <button>Start</button>
-                    <button>Reset</button>
                 </div>
             </div>
         </div>
