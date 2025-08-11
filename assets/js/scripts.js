@@ -7,23 +7,26 @@ const defaults = {
         "emomRounds": 8
     },
     "amrap": {
-        "amrapMinutes": 10
+        "amrapMinutes": 5
     }
 }
 
 const globalValues = {}
+
 
 /**
  *  Set default values
  */
 const setDefaultValues = (resetType) => {
     for (let [type, values] of Object.entries(defaults)) {
-        for (let [id, value] of Object.entries(values)) {
-            var element = document.getElementById(id);
+        if (resetType == null || type == resetType) {
+            for (let [id, value] of Object.entries(values)) {
+                var element = document.getElementById(id);
 
-            if (element !== null) {
-                element.innerHTML = value;
-                globalValues[id] = value;
+                if (element !== null) {
+                    element.innerHTML = value;
+                    globalValues[id] = value;
+                }
             }
         }
     }
