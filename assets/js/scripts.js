@@ -3,11 +3,11 @@
  */
 const defaults = {
     'emom': {
-        'emomMinutes': 1,
+        'emomTime': 60,
         'emomRounds': 8
     },
     'amrap': {
-        'amrapMinutes': 5
+        'amrapTime': 300
     }
 }
 
@@ -24,11 +24,11 @@ const setDefaultValues = (resetType) => {
     for (let [type, values] of Object.entries(defaults)) {
         if (resetType == null || type == resetType) {
             for (let [id, value] of Object.entries(values)) {
-                var element = document.getElementById(id);
+                let el = document.getElementById(id);
 
-                if (element !== null) {
-                    element.innerHTML = value;
+                if (el !== null) {
                     globalValues[type][id] = value;
+                    el.innerHTML = id.includes('Time') ? value / 60 : value;
                 }
             }
         }
@@ -38,13 +38,28 @@ const setDefaultValues = (resetType) => {
 /**
  *  Increment or decrement time or round settings
  */
-const adjustSetting = (type, itemId, amount) => {
-    var item = document.getElementById(itemId);
+const adjustSetting = (type, id, interval) => {
+    let item = document.getElementById(id);
 
     if (item !== null) {
-        var newValue = globalValues[type][itemId] + amount;
-        globalValues[type][itemId] = newValue;
-        item.innerHTML = newValue;
+        let curValue = globalValues[type][id];
+        let newValue;
+
+        // Snap to closest interval step
+        if (interval > 0) {
+            newValue = curValue + (interval - (curValue % interval));
+        } else {
+            if (curValue % interval != 0) {
+                newValue = curValue - (curValue % interval);
+            } else {
+                newValue = curValue + interval;
+            }
+        }
+
+        if (newValue > 0) {
+            globalValues[type][id] = newValue;
+            item.innerHTML = id.includes('Time') ? newValue / 60 : newValue;
+        }
     }
 }
 
@@ -85,12 +100,12 @@ const switchType = (element, type) => {
  */
 const startTimer = (timerType) => {
     let data = globalValues[timerType];
-    let time = data[timerType + 'Minutes'] * 60;
+    let time = data[timerType + 'Time'];
 
     let minDisplay = document.getElementById('minDisplay');
     let secDisplay = document.getElementById('secDisplay');
-    let completedRoundsDisplay = document.getElementById('completedRoundsDisplay');
-    let totalRoundsDisplay = document.getElementById('totalRoundsDisplay');
+    let curRoundDisplay = document.getElementById('curRoundDisplay');
+    let totalRoundDisplay = document.getElementById('totalRoundDisplay');
     let controlButtons = document.getElementById(timerType + 'ControlButtons');
 
     let min = Math.floor(time / 60);
@@ -112,14 +127,14 @@ const startTimer = (timerType) => {
                 // End timer and clear displays
                 minDisplay.innerHTML = 0;
                 secDisplay.innerHTML = String(0).padStart(2, '0');
-                completedRoundsDisplay.innerHTML = 0;
-                totalRoundsDisplay.innerHTML = 0;
+                curRoundDisplay.innerHTML = 0;
+                totalRoundDisplay.innerHTML = 0;
                 controlButtons.classList.remove('hidden');
                 return;
             } else {
                 // Begin next round
                 curRound++;
-                completedRoundsDisplay.innerHTML = curRound;
+                curRoundDisplay.innerHTML = curRound;
                 remainingTime = time;
             }
         }
@@ -131,18 +146,17 @@ const startTimer = (timerType) => {
         minDisplay.innerHTML = min;
         secDisplay.innerHTML = String(sec).padStart(2, '0');
 
-        // Calculate time deviation with system clock to compensate for timer inaccuracy
+        // Compensate for timer inaccuracy using system clock
         ticks += 1000;
         diff = (new Date().getTime() - start) - ticks;
-        console.log(remainingTime + ' ' + diff);
         setTimeout(() => runTimer(remainingTime - 1), 1000 - diff);
     }
 
     // Hide control panel buttons
     controlButtons.classList.add('hidden');
 
-    completedRoundsDisplay.innerHTML = curRound;
-    totalRoundsDisplay.innerHTML = totalRounds;
+    curRoundDisplay.innerHTML = curRound;
+    totalRoundDisplay.innerHTML = totalRounds;
     setTimeout(() => runTimer(time), 1000);
 }
 

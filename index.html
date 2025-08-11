@@ -23,9 +23,9 @@
 
             <div class='round-count-container'>
                 <span class='round-count'>Round</span>
-                <span id='completedRoundsDisplay' class='round-count'>0</span>
+                <span id='curRoundDisplay' class='round-count'>0</span>
                 <span class='round-count'>/</span>
-                <span id='totalRoundsDisplay' class='round-count'>0</span>
+                <span id='totalRoundDisplay' class='round-count'>0</span>
             </div>
 
             <div class='clock-controls'>
@@ -45,17 +45,17 @@
                     <div class='control-item'>
                         <div class='label'>
                             <span>E</span>
-                            <span id='emomMinutes'></span>
+                            <span id='emomTime'></span>
                             <span>MOM</span>
                         </div>
 
                         <div class='adjustment-buttons'>
-                            <button onclick="adjustSetting('emom', 'emomMinutes', -1)">&#9666&#9666&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomMinutes', -0.5)">&#9666&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomMinutes', -0.25)">&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomMinutes', 0.25)">&#9656</button>
-                            <button onclick="adjustSetting('emom', 'emomMinutes', 0.5)">&#9656&#9656</button>
-                            <button onclick="adjustSetting('emom', 'emomMinutes', 1)">&#9656&#9656&#9656</button>
+                            <button onclick="adjustSetting('emom', 'emomTime', -60)">&#9666&#9666&#9666</button>
+                            <button onclick="adjustSetting('emom', 'emomTime', -30)">&#9666&#9666</button>
+                            <button onclick="adjustSetting('emom', 'emomTime', -15)">&#9666</button>
+                            <button onclick="adjustSetting('emom', 'emomTime', 15)">&#9656</button>
+                            <button onclick="adjustSetting('emom', 'emomTime', 30)">&#9656&#9656</button>
+                            <button onclick="adjustSetting('emom', 'emomTime', 60)">&#9656&#9656&#9656</button>
                         </div>
                     </div>
 
@@ -84,17 +84,17 @@
                 <div id='amrapControlPanel' class='control-panel hidden'>
                     <div class='control-item'>
                         <div class='label'>
-                            <span id='amrapMinutes'></span>
+                            <span id='amrapTime'></span>
                             <span>Mins</span>
                         </div>
 
                         <div class='adjustment-buttons'>
-                            <button onclick="adjustSetting('amrap', 'amrapMinutes', -10)">&#9666&#9666&#9666</button>
-                            <button onclick="adjustSetting('amrap', 'amrapMinutes', -5)">&#9666&#9666</button>
-                            <button onclick="adjustSetting('amrap', 'amrapMinutes', -1)">&#9666</button>
-                            <button onclick="adjustSetting('amrap', 'amrapMinutes', 1)">&#9656</button>
-                            <button onclick="adjustSetting('amrap', 'amrapMinutes', 5)">&#9656&#9656</button>
-                            <button onclick="adjustSetting('amrap', 'amrapMinutes', 10)">&#9656&#9656&#9656</button>
+                            <button onclick="adjustSetting('amrap', 'amrapTime', -600)">&#9666&#9666&#9666</button>
+                            <button onclick="adjustSetting('amrap', 'amrapTime', -300)">&#9666&#9666</button>
+                            <button onclick="adjustSetting('amrap', 'amrapTime', -60)">&#9666</button>
+                            <button onclick="adjustSetting('amrap', 'amrapTime', 60)">&#9656</button>
+                            <button onclick="adjustSetting('amrap', 'amrapTime', 300)">&#9656&#9656</button>
+                            <button onclick="adjustSetting('amrap', 'amrapTime', 600)">&#9656&#9656&#9656</button>
                         </div>
                     </div>
 
