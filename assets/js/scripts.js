@@ -3,11 +3,13 @@
  */
 const defaults = {
     'emom': {
-        'emomTime': 60,
+        'emomCountIn': 5,
+        'emomDuration': 60,
         'emomRounds': 8
     },
     'amrap': {
-        'amrapTime': 300
+        'amrapCountIn': 10,
+        'amrapDuration': 600
     }
 }
 
@@ -28,7 +30,7 @@ const setDefaultValues = (resetType) => {
 
                 if (el !== null) {
                     globalValues[type][id] = value;
-                    el.innerHTML = id.includes('Time') ? value / 60 : value;
+                    el.innerHTML = id.includes('Duration') ? value / 60 : value;
                 }
             }
         }
@@ -58,7 +60,7 @@ const adjustSetting = (type, id, interval) => {
 
         if (newValue > 0) {
             globalValues[type][id] = newValue;
-            item.innerHTML = id.includes('Time') ? newValue / 60 : newValue;
+            item.innerHTML = id.includes('Duration') ? newValue / 60 : newValue;
         }
     }
 }
@@ -100,7 +102,9 @@ const switchType = (element, type) => {
  */
 const startTimer = (timerType) => {
     let data = globalValues[timerType];
-    let time = data[timerType + 'Time'];
+    let countIn = data[timerType + 'CountIn'];
+    let duration = data[timerType + 'Duration'];
+    let totalRounds = timerType == 'emom' ? data[timerType + 'Rounds'] : 1;
 
     let minDisplay = document.getElementById('minDisplay');
     let secDisplay = document.getElementById('secDisplay');
@@ -108,21 +112,25 @@ const startTimer = (timerType) => {
     let totalRoundDisplay = document.getElementById('totalRoundDisplay');
     let controlButtons = document.getElementById(timerType + 'ControlButtons');
 
-    let min = Math.floor(time / 60);
-    let sec = time % 60;
+    let min = Math.floor(duration / 60);
+    let sec = duration % 60;
 
-    let totalRounds = timerType == 'emom' ? data[timerType + 'Rounds'] : 1;
-    let curRound = 1;
-
-    let start = new Date().getTime();
+    let start = 0;
     let ticks = 0;
     let diff = 0;
+    let curRound = 0;
+
+    // Hide control panel buttons
+    controlButtons.classList.add('hidden');
+
+    curRoundDisplay.innerHTML = curRound;
+    totalRoundDisplay.innerHTML = totalRounds;
 
     /**
      *  Run timer
      */
-    const runTimer = (remainingTime) => {
-        if (remainingTime < 0) {
+    const runTimer = (remainingDuration) => {
+        if (remainingDuration < 0) {
             if (curRound >= totalRounds) {
                 // End timer and clear displays
                 minDisplay.innerHTML = 0;
@@ -135,13 +143,13 @@ const startTimer = (timerType) => {
                 // Begin next round
                 curRound++;
                 curRoundDisplay.innerHTML = curRound;
-                remainingTime = time;
+                remainingDuration = duration;
             }
         }
 
         // Update clock readout
-        min = Math.floor(remainingTime / 60);
-        sec = remainingTime % 60;
+        min = Math.floor(remainingDuration / 60);
+        sec = remainingDuration % 60;
 
         minDisplay.innerHTML = min;
         secDisplay.innerHTML = String(sec).padStart(2, '0');
@@ -149,15 +157,14 @@ const startTimer = (timerType) => {
         // Compensate for timer inaccuracy using system clock
         ticks += 1000;
         diff = (new Date().getTime() - start) - ticks;
-        setTimeout(() => runTimer(remainingTime - 1), 1000 - diff);
+
+        console.log('Sec ' + remainingDuration + ' Rd ' + curRound + ' Diff ' + diff);
+
+        setTimeout(() => runTimer(remainingDuration - 1), 1000 - diff);
     }
 
-    // Hide control panel buttons
-    controlButtons.classList.add('hidden');
-
-    curRoundDisplay.innerHTML = curRound;
-    totalRoundDisplay.innerHTML = totalRounds;
-    setTimeout(() => runTimer(time), 1000);
+    start = new Date().getTime();
+    setTimeout(() => runTimer(countIn), 1000);
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {

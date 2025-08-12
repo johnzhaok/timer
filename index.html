@@ -44,34 +44,51 @@
                 <div id='emomControlPanel' class='control-panel'>
                     <div class='control-item'>
                         <div class='label'>
-                            <span>E</span>
-                            <span id='emomTime'></span>
-                            <span>MOM</span>
+                            <span>Count In:</span>
+                            <span id='emomCountIn'></span>
+                            <span>sec</span>
                         </div>
 
                         <div class='adjustment-buttons'>
-                            <button onclick="adjustSetting('emom', 'emomTime', -60)">&#9666&#9666&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomTime', -30)">&#9666&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomTime', -15)">&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomTime', 15)">&#9656</button>
-                            <button onclick="adjustSetting('emom', 'emomTime', 30)">&#9656&#9656</button>
-                            <button onclick="adjustSetting('emom', 'emomTime', 60)">&#9656&#9656&#9656</button>
+                            <button onclick="adjustSetting('emom', 'emomCountIn', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomCountIn', -5)">◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomCountIn', -1)">◂</button>
+                            <button onclick="adjustSetting('emom', 'emomCountIn', 1)">▸</button>
+                            <button onclick="adjustSetting('emom', 'emomCountIn', 5)">▸▸</button>
+                            <button onclick="adjustSetting('emom', 'emomCountIn', 10)">▸▸▸</button>
                         </div>
                     </div>
 
                     <div class='control-item'>
                         <div class='label'>
-                            <span>x</span>
+                            <span>Duration:</span>
+                            <span id='emomDuration'></span>
+                            <span>min</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('emom', 'emomDuration', -60)">◂◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', -30)">◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', -15)">◂</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', 15)">▸</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', 30)">▸▸</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', 60)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Rounds:</span>
                             <span id='emomRounds'></span>
                         </div>
 
                         <div class='adjustment-buttons'>
-                            <button onclick="adjustSetting('emom', 'emomRounds', -10)">&#9666&#9666&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomRounds', -5)">&#9666&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomRounds', -1)">&#9666</button>
-                            <button onclick="adjustSetting('emom', 'emomRounds', 1)">&#9656</button>
-                            <button onclick="adjustSetting('emom', 'emomRounds', 5)">&#9656&#9656</button>
-                            <button onclick="adjustSetting('emom', 'emomRounds', 10)">&#9656&#9656&#9656</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', -5)">◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', -1)">◂</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', 1)">▸</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', 5)">▸▸</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', 10)">▸▸▸</button>
                         </div>
                     </div>
 
@@ -84,17 +101,35 @@
                 <div id='amrapControlPanel' class='control-panel hidden'>
                     <div class='control-item'>
                         <div class='label'>
-                            <span id='amrapTime'></span>
-                            <span>Mins</span>
+                            <span>Count In:</span>
+                            <span id='amrapCountIn'></span>
+                            <span>sec</span>
                         </div>
 
                         <div class='adjustment-buttons'>
-                            <button onclick="adjustSetting('amrap', 'amrapTime', -600)">&#9666&#9666&#9666</button>
-                            <button onclick="adjustSetting('amrap', 'amrapTime', -300)">&#9666&#9666</button>
-                            <button onclick="adjustSetting('amrap', 'amrapTime', -60)">&#9666</button>
-                            <button onclick="adjustSetting('amrap', 'amrapTime', 60)">&#9656</button>
-                            <button onclick="adjustSetting('amrap', 'amrapTime', 300)">&#9656&#9656</button>
-                            <button onclick="adjustSetting('amrap', 'amrapTime', 600)">&#9656&#9656&#9656</button>
+                            <button onclick="adjustSetting('amrap', 'amrapCountIn', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapCountIn', -5)">◂◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapCountIn', -1)">◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapCountIn', 1)">▸</button>
+                            <button onclick="adjustSetting('amrap', 'amrapCountIn', 5)">▸▸</button>
+                            <button onclick="adjustSetting('amrap', 'amrapCountIn', 10)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Duration:</span>
+                            <span id='amrapDuration'></span>
+                            <span>min</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', -600)">◂◂◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', -300)">◂◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', -60)">◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', 60)">▸</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', 300)">▸▸</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', 600)">▸▸▸</button>
                         </div>
                     </div>
 
