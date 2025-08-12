@@ -49,6 +49,10 @@ body {
         color: var(--accent-color);
     }
 
+    .highlight {
+        color: var(--highlight-color);
+    }
+
     .hidden {
         display: none !important;
     }
@@ -93,8 +97,6 @@ body {
         }
 
         .round-count-container {
-            padding-bottom: 1rem;
-
             .round-count {
                 font-size: 1.3rem;
             }
@@ -102,7 +104,7 @@ body {
 
         .clock-controls {
             display: flex;
-            padding-top: 1rem;
+            padding-top: 2rem;
 
             button {
                 font-size: 1.2rem;
@@ -115,6 +117,8 @@ body {
      *  Controls
      */
     .controls {
+        padding-bottom: 2rem;
+
         .control-types {
             color: var(--inactive-color);
             font-size: 1.8rem;
