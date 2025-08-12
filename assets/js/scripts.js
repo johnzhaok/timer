@@ -15,7 +15,9 @@ const defaults = {
 
 const globalValues = {
     'emom': {},
-    'amrap': {}
+    'amrap': {},
+    'paused': false,
+    'cancel': false
 }
 
 
@@ -111,17 +113,21 @@ const startTimer = (timerType) => {
     let curRoundDisplay = document.getElementById('curRoundDisplay');
     let totalRoundDisplay = document.getElementById('totalRoundDisplay');
     let controlButtons = document.getElementById(timerType + 'ControlButtons');
+    let clockControls = document.getElementById('clockControls');
 
     let min = Math.floor(duration / 60);
     let sec = duration % 60;
 
-    let start = 0;
-    let ticks = 0;
-    let diff = 0;
-    let curRound = 0;
+    let start, ticks, diff, curRound, nextDur;
+    start = ticks = diff = curRound = nextDur = 0;
 
-    // Hide control panel buttons
+    // Clear flags
+    globalValues['cancel'] = false;
+    globalValues['paused'] = false;
+
+    // Switch to active timer display
     controlButtons.classList.add('hidden');
+    clockControls.classList.remove('hidden');
 
     curRoundDisplay.innerHTML = curRound;
     totalRoundDisplay.innerHTML = totalRounds;
@@ -130,14 +136,23 @@ const startTimer = (timerType) => {
      *  Run timer
      */
     const runTimer = (remainingDuration) => {
+        if (globalValues['cancel']) {
+            remainingDuration = -1;
+            curRound = totalRounds;
+        }
+
         if (remainingDuration < 0) {
             if (curRound >= totalRounds) {
-                // End timer and clear displays
+                // Clear timer display
                 minDisplay.innerHTML = 0;
                 secDisplay.innerHTML = String(0).padStart(2, '0');
                 curRoundDisplay.innerHTML = 0;
                 totalRoundDisplay.innerHTML = 0;
+
+                // Switch back to standard display
                 controlButtons.classList.remove('hidden');
+                clockControls.classList.add('hidden');
+
                 return;
             } else {
                 // Begin next round
@@ -154,17 +169,40 @@ const startTimer = (timerType) => {
         minDisplay.innerHTML = min;
         secDisplay.innerHTML = String(sec).padStart(2, '0');
 
+        nextDur = globalValues['paused'] ? remainingDuration : remainingDuration - 1;
+
         // Compensate for timer inaccuracy using system clock
         ticks += 1000;
         diff = (new Date().getTime() - start) - ticks;
 
         console.log('Sec ' + remainingDuration + ' Rd ' + curRound + ' Diff ' + diff);
 
-        setTimeout(() => runTimer(remainingDuration - 1), 1000 - diff);
+        setTimeout(() => runTimer(nextDur), 1000 - diff);
     }
 
     start = new Date().getTime();
     setTimeout(() => runTimer(countIn), 1000);
+}
+
+/**
+ *  Pause timer
+ */
+const pauseTimer = (button) => {
+    let curState = globalValues['paused'];
+    globalValues['paused'] = !curState;
+
+    if (curState) {
+        button.innerHTML = 'Pause';
+    } else {
+        button.innerHTML = 'Play';
+    }
+}
+
+/**
+ *  Cancel timer
+ */
+const cancelTimer = () => {
+    globalValues['cancel'] = true;
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {
