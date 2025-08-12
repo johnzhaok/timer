@@ -148,6 +148,15 @@ body {
                 }
             }
 
+            .total-duration {
+                color: var(--inactive-color);
+                padding-bottom: 2rem;
+
+                .fg {
+                    color: var(--fg-color);
+                }
+            }
+
             .control-buttons {
                 display: flex;
 

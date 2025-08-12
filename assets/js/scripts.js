@@ -35,8 +35,26 @@ const setDefaultValues = (resetType) => {
                     el.innerHTML = id.includes('Duration') ? value / 60 : value;
                 }
             }
+
+            calculateTotalDuration(type);
         }
     }
+}
+
+/**
+ *  Calculate total workout duration
+ */
+const calculateTotalDuration = (type) => {
+    let totalDisplay = document.getElementById(type + 'Total');
+    let countIn = globalValues[type][type + 'CountIn'];
+    let duration = globalValues[type][type + 'Duration'];
+    let rounds = globalValues[type][type + 'Rounds'] ?? 1;
+
+    let totalDuration = countIn + (duration * rounds);
+    let min = Math.floor(totalDuration / 60);
+    let sec = totalDuration % 60;
+
+    totalDisplay.innerHTML = min + ':' + String(sec).padStart(2, '0');
 }
 
 /**
@@ -45,26 +63,30 @@ const setDefaultValues = (resetType) => {
 const adjustSetting = (type, id, interval) => {
     let item = document.getElementById(id);
 
-    if (item !== null) {
-        let curValue = globalValues[type][id];
-        let newValue;
+    if (item == null) {
+        return;
+    }
 
-        // Snap to closest interval step
-        if (interval > 0) {
-            newValue = curValue + (interval - (curValue % interval));
+    let curValue = globalValues[type][id];
+    let newValue;
+
+    // Snap to closest interval step
+    if (interval > 0) {
+        newValue = curValue + (interval - (curValue % interval));
+    } else {
+        if (curValue % interval != 0) {
+            newValue = curValue - (curValue % interval);
         } else {
-            if (curValue % interval != 0) {
-                newValue = curValue - (curValue % interval);
-            } else {
-                newValue = curValue + interval;
-            }
-        }
-
-        if (newValue > 0) {
-            globalValues[type][id] = newValue;
-            item.innerHTML = id.includes('Duration') ? newValue / 60 : newValue;
+            newValue = curValue + interval;
         }
     }
+
+    if (newValue > 0) {
+        globalValues[type][id] = newValue;
+        item.innerHTML = id.includes('Duration') ? newValue / 60 : newValue;
+    }
+
+    calculateTotalDuration(type);
 }
 
 /**
@@ -106,7 +128,7 @@ const startTimer = (timerType) => {
     let data = globalValues[timerType];
     let countIn = data[timerType + 'CountIn'];
     let duration = data[timerType + 'Duration'];
-    let totalRounds = timerType == 'emom' ? data[timerType + 'Rounds'] : 1;
+    let totalRounds = data[timerType + 'Rounds'] ?? 1;
 
     let minDisplay = document.getElementById('minDisplay');
     let secDisplay = document.getElementById('secDisplay');
