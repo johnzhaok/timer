@@ -23,6 +23,8 @@ const CURRENT_SETTINGS = {
     'cancel': false
 }
 
+const AUDIO_CONTEXT = new AudioContext();
+
 
 /**
  *  Set default values
@@ -125,6 +127,28 @@ const switchType = (element, type) => {
 }
 
 /**
+ *  Generate audio cues
+ *  @param {number} [frequency = 440] - Beep frequency
+ *  @param {number} [duration = 0.1] - Duration in seconds (1 = 1 second)
+ *  @param (number) [volume = 0.3] - Volume from 0 to 1 (1 = 100% volume)
+ *
+ */
+const beep = (frequency = 440, duration = 0.1, volume = 0.3) => {
+    let osc = AUDIO_CONTEXT.createOscillator();
+    let gain = AUDIO_CONTEXT.createGain();
+
+    osc.connect(gain);
+    osc.frequency.value = frequency;
+    osc.type = 'square';
+
+    gain.connect(AUDIO_CONTEXT.destination);
+    gain.gain.value = volume;
+
+    osc.start(AUDIO_CONTEXT.currentTime);
+    osc.stop(AUDIO_CONTEXT.currentTime + duration);
+}
+
+/**
  *  Start timer
  */
 const startTimer = (timerType) => {
@@ -176,6 +200,7 @@ const startTimer = (timerType) => {
                 secDisplay.innerHTML = String(0).padStart(2, '0');
                 curRoundDisplay.innerHTML = 0;
                 totalRoundDisplay.innerHTML = 0;
+                beep(220, 0.5);
 
                 // Switch back to standard display layout
                 clockControls.classList.add('hidden');
@@ -191,6 +216,7 @@ const startTimer = (timerType) => {
                 curRound++;
                 curRoundDisplay.innerHTML = curRound;
                 remainingDuration = duration;
+                beep(880, 0.5);
             }
         }
 
@@ -202,6 +228,8 @@ const startTimer = (timerType) => {
         secDisplay.innerHTML = String(sec).padStart(2, '0');
 
         nextDur = CURRENT_SETTINGS['paused'] ? remainingDuration : remainingDuration - 1;
+
+        nextDur < 3 && beep();
 
         // Compensate for timer inaccuracy using system clock
         ticks += 1000;
