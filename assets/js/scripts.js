@@ -151,7 +151,7 @@ const beep = (frequency = 440, duration = 0.1, volume = 0.3) => {
 /**
  *  Start timer
  */
-const startTimer = (timerType) => {
+const startTimer = async (timerType) => {
     let data = CURRENT_SETTINGS[timerType];
     let countIn = data[timerType + 'CountIn'];
     let duration = data[timerType + 'Duration'];
@@ -168,6 +168,9 @@ const startTimer = (timerType) => {
 
     let start, ticks, diff, curRound, nextDur;
     start = ticks = diff = curRound = nextDur = 0;
+
+    // Request wake lock
+    let wakeLock = await navigator.wakeLock.request('screen');
 
     // Clear flags
     CURRENT_SETTINGS['cancel'] = false;
@@ -187,7 +190,7 @@ const startTimer = (timerType) => {
     /**
      *  Run timer
      */
-    const runTimer = (remainingDuration) => {
+    const runTimer = async (remainingDuration) => {
         if (CURRENT_SETTINGS['cancel']) {
             remainingDuration = -1;
             curRound = totalRounds;
@@ -201,6 +204,9 @@ const startTimer = (timerType) => {
                 curRoundDisplay.innerHTML = 0;
                 totalRoundDisplay.innerHTML = 0;
                 beep(220, 0.5);
+
+                // Release wake lock
+                await wakeLock.release().then(() => wakeLock = null);
 
                 // Switch back to standard display layout
                 clockControls.classList.add('hidden');
