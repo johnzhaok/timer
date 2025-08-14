@@ -28,6 +28,7 @@ const AUDIO_CONTEXT = new AudioContext();
 
 /**
  *  Set default values
+ *  @param {string} resetType - Timer type to reset ('emom' or 'amrap')
  */
 const setDefaultValues = (resetType) => {
     for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
@@ -48,6 +49,7 @@ const setDefaultValues = (resetType) => {
 
 /**
  *  Calculate total workout duration
+ *  @param {string} type - Timer type ('emom' or 'amrap')
  */
 const calculateTotalDuration = (type) => {
     let totalDisplay = document.getElementById(type + 'Total');
@@ -64,6 +66,9 @@ const calculateTotalDuration = (type) => {
 
 /**
  *  Increment or decrement time or round settings
+ *  @param {string} type - Timer type ('emom' or 'amrap')
+ *  @param {string} id - ID of field being adjusted
+ *  @param {number} interval - Interval to increment or decrement the field (in seconds for duration)
  */
 const adjustSetting = (type, id, interval) => {
     let item = document.getElementById(id);
@@ -96,6 +101,8 @@ const adjustSetting = (type, id, interval) => {
 
 /**
  *  Switch timer type
+ *  @param {Object} element - Button element
+ *  @param {string} type - Timer type ('emom' or 'amrap')
  */
 const switchType = (element, type) => {
     // Toggle active type button
@@ -127,29 +134,8 @@ const switchType = (element, type) => {
 }
 
 /**
- *  Generate audio cues
- *  @param {number} [frequency = 440] - Beep frequency
- *  @param {number} [duration = 0.1] - Duration in seconds (1 = 1 second)
- *  @param (number) [volume = 0.3] - Volume from 0 to 1 (1 = 100% volume)
- *
- */
-const beep = (frequency = 440, duration = 0.1, volume = 0.3) => {
-    let osc = AUDIO_CONTEXT.createOscillator();
-    let gain = AUDIO_CONTEXT.createGain();
-
-    osc.connect(gain);
-    osc.frequency.value = frequency;
-    osc.type = 'square';
-
-    gain.connect(AUDIO_CONTEXT.destination);
-    gain.gain.value = volume;
-
-    osc.start(AUDIO_CONTEXT.currentTime);
-    osc.stop(AUDIO_CONTEXT.currentTime + duration);
-}
-
-/**
  *  Start timer
+ *  @param {string} timerType - Timer type (emom or amrap)
  */
 const startTimer = async (timerType) => {
     let data = CURRENT_SETTINGS[timerType];
@@ -188,7 +174,30 @@ const startTimer = async (timerType) => {
     totalRoundDisplay.innerHTML = totalRounds;
 
     /**
+     *  Generate audio cues
+     *  @param {number} [frequency = 440] - Tone frequency in Hz
+     *  @param {number} [duration = 0.1] - Duration in seconds (1 = 1 second)
+     *  @param (number) [volume = 0.3] - Volume from 0 to 1 (1 = 100% volume)
+     *
+     */
+    const beep = (frequency = 440, duration = 0.1, volume = 0.3) => {
+        let osc = AUDIO_CONTEXT.createOscillator();
+        let gain = AUDIO_CONTEXT.createGain();
+
+        osc.connect(gain);
+        osc.frequency.value = frequency;
+        osc.type = 'square';
+
+        gain.connect(AUDIO_CONTEXT.destination);
+        gain.gain.value = volume;
+
+        osc.start(AUDIO_CONTEXT.currentTime);
+        osc.stop(AUDIO_CONTEXT.currentTime + duration);
+    }
+
+    /**
      *  Run timer
+     *  @param {number} remainingDuration - Number of seconds remaining on timer
      */
     const runTimer = async (remainingDuration) => {
         if (CURRENT_SETTINGS['cancel']) {
@@ -252,6 +261,7 @@ const startTimer = async (timerType) => {
 
 /**
  *  Pause timer
+ *  @param {Object} button - Button element
  */
 const pauseTimer = (button) => {
     let curState = CURRENT_SETTINGS['paused'];
