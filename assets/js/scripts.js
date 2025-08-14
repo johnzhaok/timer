@@ -169,7 +169,7 @@ const startTimer = (timerType) => {
             curRound = totalRounds;
         }
 
-        if (remainingDuration < 0) {
+        if (remainingDuration <= 0) {
             if (curRound >= totalRounds) {
                 // Clear timer display
                 minDisplay.innerHTML = 0;
