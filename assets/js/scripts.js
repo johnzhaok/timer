@@ -3,13 +3,15 @@
  */
 const DEFAULT_SETTINGS = {
     'emom': {
-        'emomCountIn': 5,
         'emomDuration': 60,
         'emomRounds': 8
     },
     'amrap': {
-        'amrapCountIn': 10,
         'amrapDuration': 600
+    },
+    'config': {
+        'configCountIn': 5,
+        'configVolume': 30
     }
 }
 
@@ -19,6 +21,7 @@ const DEFAULT_SETTINGS = {
 const CURRENT_SETTINGS = {
     'emom': {},
     'amrap': {},
+    'config': {},
     'paused': false,
     'cancel': false
 }
@@ -52,16 +55,24 @@ const setDefaultValues = (resetType) => {
  *  @param {string} type - Timer type ('emom' or 'amrap')
  */
 const calculateTotalDuration = (type) => {
-    let totalDisplay = document.getElementById(type + 'Total');
-    let countIn = CURRENT_SETTINGS[type][type + 'CountIn'];
-    let duration = CURRENT_SETTINGS[type][type + 'Duration'];
-    let rounds = CURRENT_SETTINGS[type][type + 'Rounds'] ?? 1;
+    if (type != 'config') {
+        let totalDisplay = document.getElementById(type + 'Total');
+        let duration = CURRENT_SETTINGS[type][type + 'Duration'];
+        let rounds = CURRENT_SETTINGS[type][type + 'Rounds'] ?? 1;
+        let countIn = CURRENT_SETTINGS['config']['configCountIn']
+            ?? DEFAULT_SETTINGS['config']['configCountIn'];
 
-    let totalDuration = countIn + (duration * rounds);
-    let min = Math.floor(totalDuration / 60);
-    let sec = totalDuration % 60;
+        let totalDuration = countIn + (duration * rounds);
+        let min = Math.floor(totalDuration / 60);
+        let sec = totalDuration % 60;
 
-    totalDisplay.innerHTML = min + ':' + String(sec).padStart(2, '0');
+        totalDisplay.innerHTML = min + ':' + String(sec).padStart(2, '0');
+    } else {
+        // Add count in duration to total durations of all timers
+        for (let [t, v] of Object.entries(DEFAULT_SETTINGS)) {
+            t != 'config' && calculateTotalDuration(t);
+        }
+    }
 }
 
 /**
@@ -91,7 +102,7 @@ const adjustSetting = (type, id, interval) => {
         }
     }
 
-    if (newValue > 0) {
+    if (newValue > 0 && !(id == 'configVolume' && newValue > 100)) {
         CURRENT_SETTINGS[type][id] = newValue;
         item.innerHTML = id.includes('Duration') ? newValue / 60 : newValue;
     }
@@ -100,11 +111,11 @@ const adjustSetting = (type, id, interval) => {
 }
 
 /**
- *  Switch timer type
+ *  Switch control panel
  *  @param {Object} element - Button element
  *  @param {string} type - Timer type ('emom' or 'amrap')
  */
-const switchType = (element, type) => {
+const switchPanel = (element, type) => {
     // Toggle active type button
     let sibling = element.parentNode.firstElementChild;
 
@@ -139,7 +150,7 @@ const switchType = (element, type) => {
  */
 const startTimer = async (timerType) => {
     let data = CURRENT_SETTINGS[timerType];
-    let countIn = data[timerType + 'CountIn'];
+    let countIn = CURRENT_SETTINGS['config']['configCountIn'];
     let duration = data[timerType + 'Duration'];
     let totalRounds = data[timerType + 'Rounds'] ?? 1;
 
@@ -165,8 +176,8 @@ const startTimer = async (timerType) => {
     // Switch to active timer display layout
     clockControls.classList.remove('hidden');
 
-    for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
-        document.getElementById(type + 'ControlButtons')
+    for (let [t, v] of Object.entries(DEFAULT_SETTINGS)) {
+        document.getElementById(t + 'ControlButtons')
             .classList.add('hidden');
     }
 
@@ -177,12 +188,11 @@ const startTimer = async (timerType) => {
      *  Generate audio cues
      *  @param {number} [frequency = 440] - Tone frequency in Hz
      *  @param {number} [duration = 0.1] - Duration in seconds (1 = 1 second)
-     *  @param (number) [volume = 0.3] - Volume from 0 to 1 (1 = 100% volume)
-     *
      */
-    const beep = (frequency = 440, duration = 0.1, volume = 0.3) => {
+    const beep = (frequency = 440, duration = 0.1) => {
         let osc = AUDIO_CONTEXT.createOscillator();
         let gain = AUDIO_CONTEXT.createGain();
+        let volume = CURRENT_SETTINGS['config']['configVolume'] / 100;
 
         osc.connect(gain);
         osc.frequency.value = frequency;
@@ -220,8 +230,8 @@ const startTimer = async (timerType) => {
                 // Switch back to standard display layout
                 clockControls.classList.add('hidden');
 
-                for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
-                    document.getElementById(type + 'ControlButtons')
+                for (let [t, v] of Object.entries(DEFAULT_SETTINGS)) {
+                    document.getElementById(t + 'ControlButtons')
                         .classList.remove('hidden');
                 }
 
@@ -244,7 +254,7 @@ const startTimer = async (timerType) => {
 
         nextDur = CURRENT_SETTINGS['paused'] ? remainingDuration : remainingDuration - 1;
 
-        nextDur < 3 && beep();
+        nextDur < 3 && !CURRENT_SETTINGS['paused'] && beep();
 
         // Compensate for timer inaccuracy using system clock
         ticks += 1000;

@@ -35,30 +35,14 @@
         </div>
 
         <div class='controls'>
-            <div class='control-types'>
-                <button class='active' onclick="switchType(this, 'emom')">EMOM</button>
-                <button onclick="switchType(this, 'amrap')">AMRAP</button>
+            <div class='control-switcher-container'>
+                <button class='control-switcher active' onclick="switchPanel(this, 'emom')">EMOM</button>
+                <button class='control-switcher' onclick="switchPanel(this, 'amrap')">AMRAP</button>
+                <button class='control-switcher' onclick="switchPanel(this, 'config')">CONFIG</button>
             </div>
 
             <div class='control-panel-container'>
                 <div id='emomControlPanel' class='control-panel'>
-                    <div class='control-item'>
-                        <div class='label'>
-                            <span>Count In:</span>
-                            <span id='emomCountIn' class='highlight'></span>
-                            <span>sec</span>
-                        </div>
-
-                        <div class='adjustment-buttons'>
-                            <button onclick="adjustSetting('emom', 'emomCountIn', -10)">◂◂◂</button>
-                            <button onclick="adjustSetting('emom', 'emomCountIn', -5)">◂◂</button>
-                            <button onclick="adjustSetting('emom', 'emomCountIn', -1)">◂</button>
-                            <button onclick="adjustSetting('emom', 'emomCountIn', 1)">▸</button>
-                            <button onclick="adjustSetting('emom', 'emomCountIn', 5)">▸▸</button>
-                            <button onclick="adjustSetting('emom', 'emomCountIn', 10)">▸▸▸</button>
-                        </div>
-                    </div>
-
                     <div class='control-item'>
                         <div class='label'>
                             <span>Duration:</span>
@@ -106,23 +90,6 @@
                 <div id='amrapControlPanel' class='control-panel hidden'>
                     <div class='control-item'>
                         <div class='label'>
-                            <span>Count In:</span>
-                            <span id='amrapCountIn' class='highlight'></span>
-                            <span>sec</span>
-                        </div>
-
-                        <div class='adjustment-buttons'>
-                            <button onclick="adjustSetting('amrap', 'amrapCountIn', -10)">◂◂◂</button>
-                            <button onclick="adjustSetting('amrap', 'amrapCountIn', -5)">◂◂</button>
-                            <button onclick="adjustSetting('amrap', 'amrapCountIn', -1)">◂</button>
-                            <button onclick="adjustSetting('amrap', 'amrapCountIn', 1)">▸</button>
-                            <button onclick="adjustSetting('amrap', 'amrapCountIn', 5)">▸▸</button>
-                            <button onclick="adjustSetting('amrap', 'amrapCountIn', 10)">▸▸▸</button>
-                        </div>
-                    </div>
-
-                    <div class='control-item'>
-                        <div class='label'>
                             <span>Duration:</span>
                             <span id='amrapDuration' class='highlight'></span>
                             <span>min</span>
@@ -146,6 +113,46 @@
                     <div id='amrapControlButtons' class='control-buttons'>
                         <button onclick="startTimer('amrap')">Start</button>
                         <button onclick="setDefaultValues('amrap')">Reset</button>
+                    </div>
+                </div>
+
+                <div id='configControlPanel' class='control-panel hidden'>
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Count In:</span>
+                            <span id='configCountIn' class='highlight'></span>
+                            <span>sec</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('config', 'configCountIn', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', -5)">◂◂</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', -1)">◂</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', 1)">▸</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', 5)">▸▸</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', 10)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Volume:</span>
+                            <span id='configVolume' class='highlight'></span>
+                            <span>%</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('config', 'configVolume', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('config', 'configVolume', -5)">◂◂</button>
+                            <button onclick="adjustSetting('config', 'configVolume', -1)">◂</button>
+                            <button onclick="adjustSetting('config', 'configVolume', 1)">▸</button>
+                            <button onclick="adjustSetting('config', 'configVolume', 5)">▸▸</button>
+                            <button onclick="adjustSetting('config', 'configVolume', 10)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div id='configControlButtons' class='control-buttons'>
+                        <button onclick="setDefaultValues('config')">Reset</button>
                     </div>
                 </div>
             </div>

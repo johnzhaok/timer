@@ -119,10 +119,15 @@ body {
     .controls {
         padding-bottom: 2rem;
 
-        .control-types {
+        .control-switcher-container {
+            display: flex;
             color: var(--inactive-color);
             font-size: 1.8rem;
             padding-bottom: 2rem;
+
+            .control-switcher {
+                flex: 1;
+            }
 
             .active {
                 color: var(--highlight-color);
