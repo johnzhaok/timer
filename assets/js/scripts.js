@@ -137,7 +137,6 @@ const startTimer = (timerType) => {
     let secDisplay = document.getElementById('secDisplay');
     let curRoundDisplay = document.getElementById('curRoundDisplay');
     let totalRoundDisplay = document.getElementById('totalRoundDisplay');
-    let controlButtons = document.getElementById(timerType + 'ControlButtons');
     let clockControls = document.getElementById('clockControls');
 
     let min = Math.floor(duration / 60);
@@ -154,7 +153,8 @@ const startTimer = (timerType) => {
     clockControls.classList.remove('hidden');
 
     for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
-        document.getElementById(type + 'ControlButtons').classList.add('hidden');
+        document.getElementById(type + 'ControlButtons')
+            .classList.add('hidden');
     }
 
     curRoundDisplay.innerHTML = curRound;
@@ -181,7 +181,8 @@ const startTimer = (timerType) => {
                 clockControls.classList.add('hidden');
 
                 for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
-                    document.getElementById(type + 'ControlButtons').classList.remove('hidden');
+                    document.getElementById(type + 'ControlButtons')
+                        .classList.remove('hidden');
                 }
 
                 return;
