@@ -1,7 +1,7 @@
 /**
  *  Default values
  */
-const defaults = {
+const DEFAULT_SETTINGS = {
     'emom': {
         'emomCountIn': 5,
         'emomDuration': 60,
@@ -13,7 +13,10 @@ const defaults = {
     }
 }
 
-const globalValues = {
+/**
+ *  Currently set global values
+ */
+const CURRENT_SETTINGS = {
     'emom': {},
     'amrap': {},
     'paused': false,
@@ -25,13 +28,13 @@ const globalValues = {
  *  Set default values
  */
 const setDefaultValues = (resetType) => {
-    for (let [type, values] of Object.entries(defaults)) {
+    for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
         if (resetType == null || type == resetType) {
             for (let [id, value] of Object.entries(values)) {
                 let el = document.getElementById(id);
 
                 if (el !== null) {
-                    globalValues[type][id] = value;
+                    CURRENT_SETTINGS[type][id] = value;
                     el.innerHTML = id.includes('Duration') ? value / 60 : value;
                 }
             }
@@ -46,9 +49,9 @@ const setDefaultValues = (resetType) => {
  */
 const calculateTotalDuration = (type) => {
     let totalDisplay = document.getElementById(type + 'Total');
-    let countIn = globalValues[type][type + 'CountIn'];
-    let duration = globalValues[type][type + 'Duration'];
-    let rounds = globalValues[type][type + 'Rounds'] ?? 1;
+    let countIn = CURRENT_SETTINGS[type][type + 'CountIn'];
+    let duration = CURRENT_SETTINGS[type][type + 'Duration'];
+    let rounds = CURRENT_SETTINGS[type][type + 'Rounds'] ?? 1;
 
     let totalDuration = countIn + (duration * rounds);
     let min = Math.floor(totalDuration / 60);
@@ -67,7 +70,7 @@ const adjustSetting = (type, id, interval) => {
         return;
     }
 
-    let curValue = globalValues[type][id];
+    let curValue = CURRENT_SETTINGS[type][id];
     let newValue;
 
     // Snap to closest interval step
@@ -82,7 +85,7 @@ const adjustSetting = (type, id, interval) => {
     }
 
     if (newValue > 0) {
-        globalValues[type][id] = newValue;
+        CURRENT_SETTINGS[type][id] = newValue;
         item.innerHTML = id.includes('Duration') ? newValue / 60 : newValue;
     }
 
@@ -125,7 +128,7 @@ const switchType = (element, type) => {
  *  Start timer
  */
 const startTimer = (timerType) => {
-    let data = globalValues[timerType];
+    let data = CURRENT_SETTINGS[timerType];
     let countIn = data[timerType + 'CountIn'];
     let duration = data[timerType + 'Duration'];
     let totalRounds = data[timerType + 'Rounds'] ?? 1;
@@ -144,12 +147,15 @@ const startTimer = (timerType) => {
     start = ticks = diff = curRound = nextDur = 0;
 
     // Clear flags
-    globalValues['cancel'] = false;
-    globalValues['paused'] = false;
+    CURRENT_SETTINGS['cancel'] = false;
+    CURRENT_SETTINGS['paused'] = false;
 
-    // Switch to active timer display
-    controlButtons.classList.add('hidden');
+    // Switch to active timer display layout
     clockControls.classList.remove('hidden');
+
+    for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
+        document.getElementById(type + 'ControlButtons').classList.add('hidden');
+    }
 
     curRoundDisplay.innerHTML = curRound;
     totalRoundDisplay.innerHTML = totalRounds;
@@ -158,7 +164,7 @@ const startTimer = (timerType) => {
      *  Run timer
      */
     const runTimer = (remainingDuration) => {
-        if (globalValues['cancel']) {
+        if (CURRENT_SETTINGS['cancel']) {
             remainingDuration = -1;
             curRound = totalRounds;
         }
@@ -171,9 +177,12 @@ const startTimer = (timerType) => {
                 curRoundDisplay.innerHTML = 0;
                 totalRoundDisplay.innerHTML = 0;
 
-                // Switch back to standard display
-                controlButtons.classList.remove('hidden');
+                // Switch back to standard display layout
                 clockControls.classList.add('hidden');
+
+                for (let [type, values] of Object.entries(DEFAULT_SETTINGS)) {
+                    document.getElementById(type + 'ControlButtons').classList.remove('hidden');
+                }
 
                 return;
             } else {
@@ -191,7 +200,7 @@ const startTimer = (timerType) => {
         minDisplay.innerHTML = min;
         secDisplay.innerHTML = String(sec).padStart(2, '0');
 
-        nextDur = globalValues['paused'] ? remainingDuration : remainingDuration - 1;
+        nextDur = CURRENT_SETTINGS['paused'] ? remainingDuration : remainingDuration - 1;
 
         // Compensate for timer inaccuracy using system clock
         ticks += 1000;
@@ -210,8 +219,8 @@ const startTimer = (timerType) => {
  *  Pause timer
  */
 const pauseTimer = (button) => {
-    let curState = globalValues['paused'];
-    globalValues['paused'] = !curState;
+    let curState = CURRENT_SETTINGS['paused'];
+    CURRENT_SETTINGS['paused'] = !curState;
 
     if (curState) {
         button.innerHTML = 'Pause';
@@ -224,7 +233,7 @@ const pauseTimer = (button) => {
  *  Cancel timer
  */
 const cancelTimer = () => {
-    globalValues['cancel'] = true;
+    CURRENT_SETTINGS['cancel'] = true;
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {
