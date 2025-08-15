@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS = {
         'amrapDuration': 600
     },
     'config': {
-        'configCountIn': 10,
+        'configCountIn': 5,
         'configVolume': 30
     }
 }
@@ -226,7 +226,7 @@ const startTimer = async (timerType) => {
     }
 
     /**
-     *  Update clock display
+     *  Update clock display and play audio cues when appropriate
      *  @param {number} newTime - Time remaining on clock in seconds
      *  @param {number|null} [newRound = null] - Current round number (leave null if not updating)
      *  @param {number|null} [newTotalRound = null] - Total number of rounds (leave null if not updating)
@@ -234,6 +234,13 @@ const startTimer = async (timerType) => {
     const updateClock = (newTime, newRound = null, newTotalRound = null) => {
         let min = Math.floor(newTime / 60);
         let sec = newTime % 60;
+
+        minDisplay.innerHTML = min;
+        secDisplay.innerHTML = String(sec).padStart(2, '0');
+
+        if (newTotalRound !== null) {
+            totalRoundDisplay.innerHTML = newTotalRound;
+        }
 
         if (newRound !== null) {
             curRoundDisplay.innerHTML = newRound;
@@ -243,16 +250,7 @@ const startTimer = async (timerType) => {
             } else {
                 beep(880, 0.5); // New round tone
             }
-        }
-
-        if (newTotalRound !== null) {
-            totalRoundDisplay.innerHTML = newTotalRound;
-        }
-
-        minDisplay.innerHTML = min;
-        secDisplay.innerHTML = String(sec).padStart(2, '0');
-
-        if (newTime <= 3 && !CURRENT_SETTINGS['paused']) {
+        } else if (newTime <= 3 && !CURRENT_SETTINGS['paused']) {
             beep(); // Countdown to next round
         }
     }
