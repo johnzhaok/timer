@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS = {
         'amrapDuration': 600
     },
     'config': {
-        'configCountIn': 5,
+        'configCountIn': 10,
         'configVolume': 30
     }
 }
@@ -160,29 +160,49 @@ const startTimer = async (timerType) => {
     let totalRoundDisplay = document.getElementById('totalRoundDisplay');
     let clockControls = document.getElementById('clockControls');
 
-    let min = Math.floor(duration / 60);
-    let sec = duration % 60;
-
     let start, ticks, diff, curRound, nextDur;
     start = ticks = diff = curRound = nextDur = 0;
 
     // Request wake lock
     let wakeLock = await navigator.wakeLock.request('screen');
 
-    // Clear flags
-    CURRENT_SETTINGS['cancel'] = false;
-    CURRENT_SETTINGS['paused'] = false;
+    /**
+     *  Run timer
+     *  @param {number} remainingDuration - Number of seconds remaining on timer
+     */
+    const runTimer = async (remainingDuration) => {
+        if (CURRENT_SETTINGS['cancel']) {
+            remainingDuration = -1;
+            curRound = totalRounds;
+        }
 
-    // Switch to active timer display layout
-    clockControls.classList.remove('hidden');
+        if (remainingDuration <= 0) {
+            if (curRound >= totalRounds) {
+                updateClock(0, 0, 0);
+                toggleActiveDisplay();
 
-    for (let [t, v] of Object.entries(DEFAULT_SETTINGS)) {
-        document.getElementById(t + 'ControlButtons')
-            .classList.add('hidden');
+                // Release wake lock
+                await wakeLock.release().then(() => wakeLock = null);
+                return;
+            } else {
+                // Begin next round
+                curRound++;
+                remainingDuration = duration;
+                updateClock(remainingDuration, curRound);
+            }
+        } else {
+            updateClock(remainingDuration);
+        }
+
+        nextDur = CURRENT_SETTINGS['paused'] ? remainingDuration : remainingDuration - 1;
+
+        // Compensate for timer inaccuracy using system clock
+        ticks += 1000;
+        diff = (new Date().getTime() - start) - ticks;
+        console.log('Sec ' + remainingDuration + ' Rd ' + curRound + ' Diff ' + diff);
+
+        setTimeout(() => runTimer(nextDur), 1000 - diff);
     }
-
-    curRoundDisplay.innerHTML = curRound;
-    totalRoundDisplay.innerHTML = totalRounds;
 
     /**
      *  Generate audio cues
@@ -206,67 +226,58 @@ const startTimer = async (timerType) => {
     }
 
     /**
-     *  Run timer
-     *  @param {number} remainingDuration - Number of seconds remaining on timer
+     *  Update clock display
+     *  @param {number} newTime - Time remaining on clock in seconds
+     *  @param {number|null} [newRound = null] - Current round number (leave null if not updating)
+     *  @param {number|null} [newTotalRound = null] - Total number of rounds (leave null if not updating)
      */
-    const runTimer = async (remainingDuration) => {
-        if (CURRENT_SETTINGS['cancel']) {
-            remainingDuration = -1;
-            curRound = totalRounds;
-        }
+    const updateClock = (newTime, newRound = null, newTotalRound = null) => {
+        let min = Math.floor(newTime / 60);
+        let sec = newTime % 60;
 
-        if (remainingDuration <= 0) {
-            if (curRound >= totalRounds) {
-                // Clear timer display
-                minDisplay.innerHTML = 0;
-                secDisplay.innerHTML = String(0).padStart(2, '0');
-                curRoundDisplay.innerHTML = 0;
-                totalRoundDisplay.innerHTML = 0;
-                beep(220, 0.5);
+        if (newRound !== null) {
+            curRoundDisplay.innerHTML = newRound;
 
-                // Release wake lock
-                await wakeLock.release().then(() => wakeLock = null);
-
-                // Switch back to standard display layout
-                clockControls.classList.add('hidden');
-
-                for (let [t, v] of Object.entries(DEFAULT_SETTINGS)) {
-                    document.getElementById(t + 'ControlButtons')
-                        .classList.remove('hidden');
-                }
-
-                return;
+            if (newTime == 0 && newRound == 0 && newTotalRound == 0) {
+                beep(220, 0.5); // End of timer tone
             } else {
-                // Begin next round
-                curRound++;
-                curRoundDisplay.innerHTML = curRound;
-                remainingDuration = duration;
-                beep(880, 0.5);
+                beep(880, 0.5); // New round tone
             }
         }
 
-        // Update clock readout
-        min = Math.floor(remainingDuration / 60);
-        sec = remainingDuration % 60;
+        if (newTotalRound !== null) {
+            totalRoundDisplay.innerHTML = newTotalRound;
+        }
 
         minDisplay.innerHTML = min;
         secDisplay.innerHTML = String(sec).padStart(2, '0');
 
-        nextDur = CURRENT_SETTINGS['paused'] ? remainingDuration : remainingDuration - 1;
-
-        nextDur < 3 && !CURRENT_SETTINGS['paused'] && beep();
-
-        // Compensate for timer inaccuracy using system clock
-        ticks += 1000;
-        diff = (new Date().getTime() - start) - ticks;
-
-        console.log('Sec ' + remainingDuration + ' Rd ' + curRound + ' Diff ' + diff);
-
-        setTimeout(() => runTimer(nextDur), 1000 - diff);
+        if (newTime <= 3 && !CURRENT_SETTINGS['paused']) {
+            beep(); // Countdown to next round
+        }
     }
 
+    /**
+     *  Toggle display layout
+     */
+    const toggleActiveDisplay = () => {
+        clockControls.classList.toggle('hidden');
+
+        for (let [t, v] of Object.entries(DEFAULT_SETTINGS)) {
+            document.getElementById(t + 'ControlButtons')
+                .classList.toggle('hidden');
+        }
+    }
+
+    // Clear flags
+    CURRENT_SETTINGS['cancel'] = false;
+    CURRENT_SETTINGS['paused'] = false;
+
+    toggleActiveDisplay();
+    updateClock(countIn, null, totalRounds);
+
     start = new Date().getTime();
-    setTimeout(() => runTimer(countIn), 1000);
+    setTimeout(() => runTimer(countIn - 1), 1000);
 }
 
 /**
