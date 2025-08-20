@@ -1,0 +1,186 @@
+/**
+ *  Fonts
+ */
+@import url("https://fonts.googleapis.com/css2?family=Cascadia+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap");
+
+
+/**
+ *  Global variables - fonts and color palette
+ */
+:root {
+    --primary-font: "Cascadia Mono", monospace;
+
+    --bg-color: #000000;
+    --fg-color: #c4c4c4;
+    --highlight-color: #ffffff;
+    --inactive-color: #9d9d9d;
+    --accent-color: #689d6a;
+    /* --accent-color: #8ec07c; */
+    /* --accent-color: #83a598; */
+    /* --accent-color: #fabd2f; */
+    /* --accent-color: #f9d507; */
+}
+
+/**
+ *  Base styles
+ */
+html,
+body {
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+
+/**
+ *  Content Body
+ */
+.content-body {
+    font-family: var(--primary-font);
+    text-align: center;
+    width: 95%;
+    max-width: 400px;
+    margin: auto;
+    padding-top: 3rem;
+
+    .accent {
+        color: var(--accent-color);
+    }
+
+    .highlight {
+        color: var(--highlight-color);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    button {
+        color: inherit;
+        background: none;
+        font: inherit;
+        border: none;
+        padding: 0;
+        outline: inherit;
+        cursor: pointer;
+        touch-action: manipulation;
+    }
+
+    /**
+     *  Clock
+     */
+    .clock {
+        padding-bottom: 2rem;
+
+        .readout-container {
+            color: var(--highlight-color);
+            font-size: 6rem;
+            justify-content: center;
+            display: table;
+            margin: auto;
+
+            .readout {
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            .separator {
+                color: var(--fg-color);
+                font-size: 3rem;
+            }
+        }
+
+        .round-count-container {
+            .round-count {
+                font-size: 1.3rem;
+            }
+        }
+
+        .clock-controls {
+            display: flex;
+            padding-top: 2rem;
+
+            button {
+                font-size: 1.2rem;
+                flex: 1;
+            }
+        }
+    }
+
+    /**
+     *  Controls
+     */
+    .controls {
+        padding-bottom: 2rem;
+
+        .control-switcher-container {
+            display: flex;
+            color: var(--inactive-color);
+            font-size: 1.8rem;
+            padding-bottom: 2rem;
+
+            .control-switcher {
+                flex: 1;
+            }
+
+            .active {
+                color: var(--highlight-color);
+                font-size: 2rem;
+            }
+        }
+
+        .control-panel {
+            font-size: 1.2rem;
+
+            .control-item {
+                padding-bottom: 1rem;
+
+                .adjustment-buttons {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 20px 0 20px 0;
+
+                    button {
+                        font-size: 1.4rem;
+                        flex: 1;
+                    }
+                }
+            }
+
+            .total-duration {
+                color: var(--inactive-color);
+                padding-bottom: 2rem;
+
+                .fg {
+                    color: var(--fg-color);
+                }
+            }
+
+            .control-buttons {
+                display: flex;
+
+                button {
+                    flex: 1;
+                }
+            }
+        }
+    }
+}
+
+
+/**
+ *  Mobile view
+ */
+@media only screen and (max-width: 876px) {
+    /**
+     *  Content body
+     */
+    .content-body {
+    }
+}

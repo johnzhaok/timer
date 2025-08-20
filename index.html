@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+
+    <title>Workout Timer</title>
+
+    <link rel='icon' type='image/png' href='assets/images/favicon.png'>
+    <link rel='stylesheet' href='assets/css/styles.css'>
+    <script src='assets/js/scripts.js'></script>
+</head>
+<body>
+    <div class='content-body'>
+        <h1 class='title'>Workout Timer</h1>
+
+        <div class='clock'>
+            <div class='readout-container'>
+                <span id='minDisplay' class='readout'>0</span>
+                <span class='readout separator'>:</span>
+                <span id='secDisplay' class='readout'>00</span>
+            </div>
+
+            <div class='round-count-container'>
+                <span class='round-count'>Round</span>
+                <span id='curRoundDisplay' class='round-count'>0</span>
+                <span class='round-count'>/</span>
+                <span id='totalRoundDisplay' class='round-count'>0</span>
+            </div>
+
+            <div id='clockControls' class='clock-controls hidden'>
+                <button onclick="pauseTimer(this)">Pause</button>
+                <button onclick="cancelTimer()">Cancel</button>
+            </div>
+        </div>
+
+        <div class='controls'>
+            <div class='control-switcher-container'>
+                <button class='control-switcher active' onclick="switchPanel(this, 'emom')">EMOM</button>
+                <button class='control-switcher' onclick="switchPanel(this, 'amrap')">AMRAP</button>
+                <button class='control-switcher' onclick="switchPanel(this, 'config')">CONFIG</button>
+            </div>
+
+            <div class='control-panel-container'>
+                <div id='emomControlPanel' class='control-panel'>
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Duration:</span>
+                            <span id='emomDuration' class='highlight'></span>
+                            <span>min</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('emom', 'emomDuration', -60)">◂◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', -30)">◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', -15)">◂</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', 15)">▸</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', 30)">▸▸</button>
+                            <button onclick="adjustSetting('emom', 'emomDuration', 60)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Rounds:</span>
+                            <span id='emomRounds' class='highlight'></span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('emom', 'emomRounds', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', -5)">◂◂</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', -1)">◂</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', 1)">▸</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', 5)">▸▸</button>
+                            <button onclick="adjustSetting('emom', 'emomRounds', 10)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div class='total-duration'>
+                        <span>Total:</span>
+                        <span id='emomTotal' class='fg'></span>
+                    </div>
+
+                    <div id='emomControlButtons' class='control-buttons'>
+                        <button onclick="startTimer('emom')">Start</button>
+                        <button onclick="setDefaultValues('emom')">Reset</button>
+                    </div>
+                </div>
+
+                <div id='amrapControlPanel' class='control-panel hidden'>
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Duration:</span>
+                            <span id='amrapDuration' class='highlight'></span>
+                            <span>min</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', -600)">◂◂◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', -300)">◂◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', -60)">◂</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', 60)">▸</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', 300)">▸▸</button>
+                            <button onclick="adjustSetting('amrap', 'amrapDuration', 600)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div class='total-duration'>
+                        <span>Total:</span>
+                        <span id='amrapTotal' class='fg'></span>
+                    </div>
+
+                    <div id='amrapControlButtons' class='control-buttons'>
+                        <button onclick="startTimer('amrap')">Start</button>
+                        <button onclick="setDefaultValues('amrap')">Reset</button>
+                    </div>
+                </div>
+
+                <div id='configControlPanel' class='control-panel hidden'>
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Count In:</span>
+                            <span id='configCountIn' class='highlight'></span>
+                            <span>sec</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('config', 'configCountIn', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', -5)">◂◂</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', -1)">◂</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', 1)">▸</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', 5)">▸▸</button>
+                            <button onclick="adjustSetting('config', 'configCountIn', 10)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div class='control-item'>
+                        <div class='label'>
+                            <span>Volume:</span>
+                            <span id='configVolume' class='highlight'></span>
+                            <span>%</span>
+                        </div>
+
+                        <div class='adjustment-buttons'>
+                            <button onclick="adjustSetting('config', 'configVolume', -10)">◂◂◂</button>
+                            <button onclick="adjustSetting('config', 'configVolume', -5)">◂◂</button>
+                            <button onclick="adjustSetting('config', 'configVolume', -1)">◂</button>
+                            <button onclick="adjustSetting('config', 'configVolume', 1)">▸</button>
+                            <button onclick="adjustSetting('config', 'configVolume', 5)">▸▸</button>
+                            <button onclick="adjustSetting('config', 'configVolume', 10)">▸▸▸</button>
+                        </div>
+                    </div>
+
+                    <div id='configControlButtons' class='control-buttons'>
+                        <button onclick="setDefaultValues('config')">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
